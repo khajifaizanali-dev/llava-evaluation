@@ -1,0 +1,29 @@
+#!/bin/bash
+
+##NECESSARY JOB SPECIFICATIONS`  
+#SBATCH --job-name=no-name
+#SBATCH --time=02:00:00
+#SBATCH --nodes=1          # max 32 nodes for partition gpu
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=32G
+#SBATCH --gres=gpu:a100:1
+#SBATCH --output=stdout.%x.%j
+#SBATCH --error=stderr.%x.%j
+
+##OPTIONAL JOB SPECIFICATIONS`  
+##SBATCH --account=123456             #Set billing account to 123456
+##SBATCH --mail-type=ALL              #Send email on all job events
+##SBATCH --mail-user=email_address    #Send all emails to email_address
+
+#First Executable Line
+
+module load GCCcore/12.3.0 Python
+module load cuDNN
+
+
+source /scratch/user/khajifaizanali/nlpproject/new_nlp/bin/activate
+
+python generate_small.py     --data_dir data/MileBench     --dataset_name IEdit    --model_name llava-v1.5-7b     --output_dir outputs 
+
+python evaluate.py --data-dir data/MileBench --dataset IEdit --result-dir outputs/llava-v1.5-7b

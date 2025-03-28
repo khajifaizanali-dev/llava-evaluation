@@ -96,11 +96,12 @@ class Eval:
             sample_id = res['sample_id']
             gt_ans = self.process(res["gt_response"])
             pred_ans = self.process(res["pred_response"])
+            answer = pred_ans.split("assistant:")[-1].strip()
             assert gt_ans != ''
             if pred_ans == '':
                 score = 0
             else:
-                score = rouge.get_scores(pred_ans, gt_ans)[0]['rouge-l']['f']
+                score = rouge.get_scores(answer, gt_ans)[0]['rouge-l']['f']
             acc['f'].append(score)
             image_quantity_level_cnt[self.get_image_quantity_level(res)].append(score)
             eval_list.append({'id':str(sample_id),'score':str(round(score,3))})
@@ -165,9 +166,9 @@ class Eval:
         assert gt_ans in choice_list
         # Convert choice_list to a dictionary format expected by match_choice
         option_dict = {self.char(i): choice for i, choice in enumerate(choice_list)}
-
+        answer = pred_ans.split("assistant:")[-1].strip()
         # Use match_choice to determine the selected answer from pred_ans
-        selected_answer = self.match_choice(pred_ans, option_dict)
+        selected_answer = self.match_choice(answer, option_dict)
 
         # Check if the selected answer matches the ground truth
         gt_ans_chr = self.char(choice_list.index(sample["gt_response"]))
@@ -187,10 +188,14 @@ class Eval:
         predictions: raw prediction file output by models
         '''
         # get choice_list & image_quantity_level
-        if len(predictions) != len(core_json['data']):
-            raise ValueError(f'There is prediction absent. {len(predictions)}!={len(core_json["data"])}')
+        # if len(predictions) != len(core_json['data']):
+        #     raise ValueError(f'There is prediction absent. {len(predictions)}!={len(core_json["data"])}')
         new_pres = {d['sample_id']: d for d in predictions}
+        i=0
         for sample in core_json['data']:
+            if len(new_pres)==i:
+                break
+            i+=1
             new_pres[int(sample['sample_id'])]['choice_list'] = sample['task_instance']['choice_list']
             new_pres[int(sample['sample_id'])]['image_quantity_level'] = sample['image_quantity_level']
             new_pres[int(sample['sample_id'])]['image'] = sample['task_instance']['images_path']

@@ -7,7 +7,7 @@ EVAL_SCRIPT_PATH=evaluate.py
 DATA_DIR=data/MileBench
 MODEL_CONFIG_PATH=configs/model_configs.yaml
 
-gpu_num=4
+gpu_num=1
 
 for model in llava-v1.5-7b; do
     for dataset_name in ALFRED ActionLocalization ActionPrediction ActionSequence CLEVR-Change CharacterOrder CounterfactualInference DocVQA EgocentricNavigation GPR1200 IEdit ImageNeedleInAHaystack MMCoQA MovingAttribute MovingDirection MultiModalQA OCR-VQA ObjectExistence ObjectInteraction ObjectShuffle SceneTransition SlideVQA Spot-the-Diff StateChange TQA TextNeedleInAHaystack WebQA WikiVQA nuscenes; do

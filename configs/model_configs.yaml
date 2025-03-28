@@ -1,9 +1,11 @@
 ## LLaVA 7B
 llava-v1.5-7b:
     model_name: llava-v1.5
-    model_dir: /path/to/your/model/
+    model_dir: /scratch/user/khajifaizanali/models/llava-1.5-7b-hf
     gen_kwargs:
-        max_new_tokens: 512
+        max_new_tokens: 200
         min_new_tokens: 1
         do_sample: false
         temperature: 0.0
+    max_context_len: 4096
+    n_tokens_per_image: 256
