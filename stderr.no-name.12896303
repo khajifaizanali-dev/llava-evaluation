@@ -1,0 +1,24 @@
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.52, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  33%|███▎      | 1/3 [00:05<00:10,  5.21s/it]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:12<00:06,  6.34s/it]Loading checkpoint shards: 100%|██████████| 3/3 [00:18<00:00,  6.23s/it]Loading checkpoint shards: 100%|██████████| 3/3 [00:18<00:00,  6.15s/it]
+  0%|          | 0/4 [00:00<?, ?it/s]  0%|          | 0/4 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/scratch/user/khajifaizanali/nlpproject/MileBench/generate_small.py", line 112, in <module>
+    main(args)
+  File "/scratch/user/khajifaizanali/nlpproject/MileBench/generate_small.py", line 103, in main
+    outputs = worker(device=config.device, **batch)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/user/khajifaizanali/nlpproject/MileBench/workers/baseworker.py", line 29, in __call__
+    answers = self.forward(
+              ^^^^^^^^^^^^^
+  File "/scratch/user/khajifaizanali/nlpproject/MileBench/workers/model_workers.py", line 112, in forward
+    inputs = self.processor(images=images, text=prompt, return_tensors="pt").to(self.device, torch.flsat16)
+                                                                                             ^^^^^^^^^^^^^
+  File "/scratch/user/khajifaizanali/nlpproject/new_nlp/lib/python3.11/site-packages/torch/__init__.py", line 2681, in __getattr__
+    raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
+AttributeError: module 'torch' has no attribute 'flsat16'
+Traceback (most recent call last):
+  File "/scratch/user/khajifaizanali/nlpproject/MileBench/evaluate.py", line 304, in <module>
+    main(args)
+  File "/scratch/user/khajifaizanali/nlpproject/MileBench/evaluate.py", line 273, in main
+    raise ValueError(f'{model_name}--{dataset} No prediction file found')
+ValueError: llava-v1.5-7b--MMCoQA No prediction file found

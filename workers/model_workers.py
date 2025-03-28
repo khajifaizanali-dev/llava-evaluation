@@ -100,12 +100,21 @@ class LLaVA(BaseWorker):
 
         for question, paths in zip(questions, image_paths):
             # Prepare chat-like multimodal prompt
-            question = question.replace('<ImageHere>', '')
+            parts = question.split("<ImageHere>")
+            conversation_content = []
+
+            for i, part in enumerate(parts):
+                part = part.strip()
+                if part:
+                    conversation_content.append({"type": "text", "text": part})
+                if i < len(paths):
+                    conversation_content.append({"type": "image"})
+
             conversation = [{
                 "role": "user",
-                "content": [{"type": "text", "text": question}] +
-                           [{"type": "image"} for _ in paths]
+                "content": conversation_content
             }]
+
             prompt = self.processor.apply_chat_template(conversation, add_generation_prompt=True)
             # Load and process all images
             images = [Image.open(p).convert("RGB") for p in paths]
@@ -114,14 +123,15 @@ class LLaVA(BaseWorker):
             #     [Image.open(image_path).convert('RGB') for image_path in images_path],
             #     self.processor, self.model.config
             # ).to(device)
-            print(question)
+            
             # Generate answer
             with torch.no_grad():
                 outputs = self.model.generate(**inputs, max_new_tokens=200, do_sample=False)
 
             # Decode response (skip special/image tokens)
             decoded = self.processor.tokenizer.decode(outputs[0][2:], skip_special_tokens=True).strip()
-
+            print(decoded)
+            decoded = decoded.split("assistant:")[-1].strip()
             answers.append(decoded)
 
         return answers
