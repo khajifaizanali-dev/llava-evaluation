@@ -131,7 +131,8 @@ class LLaVA(BaseWorker):
             # Decode response (skip special/image tokens)
             decoded = self.processor.tokenizer.decode(outputs[0][2:], skip_special_tokens=True).strip()
             print(decoded)
-            decoded = decoded.split("assistant:")[-1].strip()
+            decoded = decoded.split("ASSISTANT:")[-1].strip()
+            print(decoded)
             answers.append(decoded)
 
         return answers
